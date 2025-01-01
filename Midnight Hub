@@ -1,145 +1,116 @@
--- Midnight Hub
--- Version: 1.1
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 
--- Instances:
-local ScreenGui = Instance.new("ScreenGui")
-local Main = Instance.new("Frame")
-local UICorner = Instance.new("UICorner")
-local TopBar = Instance.new("Frame")
-local UICorner_2 = Instance.new("UICorner")
-local Title = Instance.new("TextLabel")
-local Subtitle = Instance.new("TextLabel")
-local ButtonsHolder = Instance.new("Frame")
-local UIListLayout = Instance.new("UIListLayout")
+local Window = OrionLib:MakeWindow({
+    Name = "Midnight Hub", 
+    HidePremium = true,
+    SaveConfig = false,
+    IntroEnabled = false,
+    ConfigFolder = "MidnightHub"
+})
 
--- Function to create styled buttons
-local function CreateStyledButton(name, text)
-    local Button = Instance.new("TextButton")
-    local UICorner_Button = Instance.new("UICorner")
-    
-    Button.Name = name
-    Button.Parent = ButtonsHolder
-    Button.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
-    Button.Size = UDim2.new(0.95, 0, 0, 40)
-    Button.Font = Enum.Font.GothamBold
-    Button.Text = text
-    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Button.TextSize = 16.000
-    Button.AutoButtonColor = false
-    
-    UICorner_Button.CornerRadius = UDim.new(0, 8)
-    UICorner_Button.Parent = Button
-    
-    -- Hover effect
-    Button.MouseEnter:Connect(function()
-        Button.BackgroundColor3 = Color3.fromRGB(50, 50, 75)
-    end)
-    
-    Button.MouseLeave:Connect(function()
-        Button.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
-    end)
-    
-    return Button
-end
+-- Main Tab
+local MainTab = Window:MakeTab({
+    Name = "Main",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
 
--- Properties:
-ScreenGui.Parent = game:GetService("CoreGui")
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+-- Main Section
+local MainSection = MainTab:AddSection({
+    Name = "Farming"
+})
 
-Main.Name = "Main"
-Main.Parent = ScreenGui
-Main.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
-Main.Position = UDim2.new(0.33, 0, 0.22, 0)
-Main.Size = UDim2.new(0, 320, 0, 400)
-Main.Active = true
-Main.Draggable = true
-
-UICorner.CornerRadius = UDim.new(0, 12)
-UICorner.Parent = Main
-
-TopBar.Name = "TopBar"
-TopBar.Parent = Main
-TopBar.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
-TopBar.Size = UDim2.new(1, 0, 0, 70)
-
-UICorner_2.CornerRadius = UDim.new(0, 12)
-UICorner_2.Parent = TopBar
-
-Title.Name = "Title"
-Title.Parent = TopBar
-Title.BackgroundTransparency = 1
-Title.Position = UDim2.new(0, 0, 0, 5)
-Title.Size = UDim2.new(1, 0, 0, 30)
-Title.Font = Enum.Font.GothamBold
-Title.Text = "Midnight Hub"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextSize = 24.000
-
-Subtitle.Name = "Subtitle"
-Subtitle.Parent = TopBar
-Subtitle.BackgroundTransparency = 1
-Subtitle.Position = UDim2.new(0, 0, 0, 35)
-Subtitle.Size = UDim2.new(1, 0, 0, 20)
-Subtitle.Font = Enum.Font.Gotham
-Subtitle.Text = "Press 'Q' to toggle"
-Subtitle.TextColor3 = Color3.fromRGB(200, 200, 200)
-Subtitle.TextSize = 14.000
-
-ButtonsHolder.Name = "ButtonsHolder"
-ButtonsHolder.Parent = Main
-ButtonsHolder.BackgroundTransparency = 1
-ButtonsHolder.Position = UDim2.new(0, 0, 0, 80)
-ButtonsHolder.Size = UDim2.new(1, 0, 0.8, -80)
-
-UIListLayout.Parent = ButtonsHolder
-UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout.Padding = UDim.new(0, 10)
-
--- Create Autofarm Button
-local AutofarmButton = CreateStyledButton("AutofarmButton", "Autofarm")
-AutofarmButton.MouseButton1Click:Connect(function()
-    local Thread1 = coroutine.create(function()
-        loadstring(game:HttpGet(('https://pastebin.com/raw/CAyTaeX5'),true))()
-    end)
-    coroutine.resume(Thread1)
-    wait(2)
-    loadstring(game:HttpGet(('https://pastebin.com/raw/kyEAUzvH'),true))()
-end)
-
--- Create Autobuy Weights Button
-local AutobuyWeightsButton = CreateStyledButton("AutobuyWeightsButton", "Autobuy Weights")
-AutobuyWeightsButton.MouseButton1Click:Connect(function()
-    loadstring(game:HttpGet(('https://pastebin.com/raw/7cu6vrRH'),true))()
-end)
-
--- Create Autobuy Genetics Button
-local AutobuyGeneticsButton = CreateStyledButton("AutobuyGeneticsButton", "Autobuy Genetics")
-AutobuyGeneticsButton.MouseButton1Click:Connect(function()
-    loadstring(game:HttpGet(('https://pastebin.com/raw/EeMP9zjC'),true))()
-end)
-
--- Create Autobuy Body Alters Button
-local AutobuyBodyAltersButton = CreateStyledButton("AutobuyBodyAltersButton", "Autobuy Body Alters")
-AutobuyBodyAltersButton.MouseButton1Click:Connect(function()
-    loadstring(game:HttpGet(('https://pastebin.com/raw/yjH02jbS'),true))()
-end)
-
--- Create Teleport Button
-local TeleportButton = CreateStyledButton("TeleportButton", "Teleport To Safe Place")
-TeleportButton.MouseButton1Click:Connect(function()
-    loadstring(game:HttpGet(('https://pastebin.com/raw/ngreFGds'),true))()
-end)
-
--- Create Delete GUI Button
-local DeleteGUIButton = CreateStyledButton("DeleteGUIButton", "Delete GUI")
-DeleteGUIButton.MouseButton1Click:Connect(function()
-    ScreenGui:Destroy()
-end)
-
--- Toggle GUI visibility with 'Q' key
-game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
-    if input.KeyCode == Enum.KeyCode.Q then
-        Main.Visible = not Main.Visible
+-- Autofarm Button
+MainSection:AddButton({
+    Name = "Autofarm",
+    Callback = function()
+        local Thread1 = coroutine.create(function()
+            loadstring(game:HttpGet(('https://pastebin.com/raw/CAyTaeX5'),true))()
+        end)
+        coroutine.resume(Thread1)
+        wait(2)
+        loadstring(game:HttpGet(('https://pastebin.com/raw/kyEAUzvH'),true))()
     end
-end)
+})
+
+-- Autobuy Section
+local AutobuySection = MainTab:AddSection({
+    Name = "Auto Buy"
+})
+
+-- Autobuy Weights Button
+AutobuySection:AddButton({
+    Name = "Autobuy Weights",
+    Callback = function()
+        loadstring(game:HttpGet(('https://pastebin.com/raw/7cu6vrRH'),true))()
+    end
+})
+
+-- Autobuy Genetics Button
+AutobuySection:AddButton({
+    Name = "Autobuy Genetics",
+    Callback = function()
+        loadstring(game:HttpGet(('https://pastebin.com/raw/EeMP9zjC'),true))()
+    end
+})
+
+-- Autobuy Body Alters Button
+AutobuySection:AddButton({
+    Name = "Autobuy Body Alters",
+    Callback = function()
+        loadstring(game:HttpGet(('https://pastebin.com/raw/yjH02jbS'),true))()
+    end
+})
+
+-- Teleport Section
+local TeleportSection = MainTab:AddSection({
+    Name = "Teleport"
+})
+
+-- Teleport Button
+TeleportSection:AddButton({
+    Name = "Teleport To Safe Place",
+    Callback = function()
+        loadstring(game:HttpGet(('https://pastebin.com/raw/ngreFGds'),true))()
+    end
+})
+
+-- Settings Tab
+local SettingsTab = Window:MakeTab({
+    Name = "Settings",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+-- Keybind Section
+local KeybindSection = SettingsTab:AddSection({
+    Name = "UI Toggle"
+})
+
+-- UI Toggle Keybind
+KeybindSection:AddBind({
+    Name = "Toggle UI",
+    Default = Enum.KeyCode.Q,
+    Hold = false,
+    Callback = function()
+        OrionLib:Toggle()
+    end    
+})
+
+-- Credits Section
+local CreditsSection = SettingsTab:AddSection({
+    Name = "Credits"
+})
+
+CreditsSection:AddParagraph("Credits", "Made by Michael979#9941\nUI Library by shlex")
+
+-- Initialize
+OrionLib:Init()
+
+-- Notify on Load
+OrionLib:MakeNotification({
+    Name = "Midnight Hub",
+    Content = "Successfully loaded! Press Q to toggle the UI",
+    Image = "rbxassetid://4483345998",
+    Time = 5
+})
