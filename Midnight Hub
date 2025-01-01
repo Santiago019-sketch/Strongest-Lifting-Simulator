@@ -1,11 +1,34 @@
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 
+-- Check if game is loaded
+if not game:IsLoaded() then
+    game.Loaded:Wait()
+end
+
+-- Variables
+local Player = game:GetService("Players").LocalPlayer
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- Anti AFK
+local GC = getconnections or get_signal_cons
+if GC then
+    for i,v in pairs(GC(Player.Idled)) do
+        if v["Disable"] then
+            v["Disable"](v)
+        elseif v["Disconnect"] then
+            v["Disconnect"](v)
+        end
+    end
+end
+
 local Window = OrionLib:MakeWindow({
-    Name = "Midnight Hub - Strongest Punch", 
+    Name = "Midnight Hub Premium", 
     HidePremium = true,
-    SaveConfig = false,
-    IntroEnabled = false,
-    ConfigFolder = "MidnightHub"
+    SaveConfig = true,
+    IntroEnabled = true,
+    IntroText = "Midnight Hub",
+    ConfigFolder = "MidnightHubSettings"
 })
 
 -- Main Tab
@@ -15,122 +38,182 @@ local MainTab = Window:MakeTab({
     PremiumOnly = false
 })
 
--- Farming Section
-local FarmingSection = MainTab:AddSection({
-    Name = "Auto Farm"
+-- Main Section
+local MainSection = MainTab:AddSection({
+    Name = "💪 Auto Farm"
 })
 
--- Auto Punch Toggle
-FarmingSection:AddToggle({
-    Name = "Auto Punch",
+-- Auto Farm Toggle
+MainSection:AddToggle({
+    Name = "Auto Farm",
     Default = false,
+    Flag = "autoFarm",
+    Save = true,
     Callback = function(Value)
-        _G.AutoPunch = Value
-        while _G.AutoPunch and task.wait() do
-            game:GetService("ReplicatedStorage").Events.DamageIncreaseOnClickEvent:FireServer()
+        _G.AutoFarm = Value
+        if Value then
+            local Thread1 = coroutine.create(function()
+                loadstring(game:HttpGet(('https://pastebin.com/raw/CAyTaeX5'),true))()
+            end)
+            coroutine.resume(Thread1)
+            wait(2)
+            loadstring(game:HttpGet(('https://pastebin.com/raw/kyEAUzvH'),true))()
         end
     end
 })
 
--- Auto Train Toggle
-FarmingSection:AddToggle({
-    Name = "Auto Train",
-    Default = false,
+-- Auto Farm Speed Slider
+MainSection:AddSlider({
+    Name = "Farm Speed",
+    Min = 1,
+    Max = 10,
+    Default = 5,
+    Color = Color3.fromRGB(255,255,255),
+    Increment = 1,
+    Flag = "farmSpeed",
+    Save = true,
+    ValueName = "Speed",
     Callback = function(Value)
-        _G.AutoTrain = Value
-        while _G.AutoTrain and task.wait() do
-            local args = {[1] = "TrainingArea"}
-            game:GetService("ReplicatedStorage").Events.AreaEvent:FireServer(unpack(args))
-        end
-    end
-})
-
--- Auto Collect Section
-local CollectSection = MainTab:AddSection({
-    Name = "Auto Collect"
-})
-
--- Auto Collect Coins
-CollectSection:AddToggle({
-    Name = "Auto Collect Coins",
-    Default = false,
-    Callback = function(Value)
-        _G.AutoCoins = Value
-        while _G.AutoCoins and task.wait() do
-            for _, v in pairs(workspace.CoinsFolder:GetChildren()) do
-                if v:IsA("Part") then
-                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
-                    wait(0.1)
-                end
-            end
-        end
-    end
-})
-
--- Auto Collect Gems
-CollectSection:AddToggle({
-    Name = "Auto Collect Gems",
-    Default = false,
-    Callback = function(Value)
-        _G.AutoGems = Value
-        while _G.AutoGems and task.wait() do
-            for _, v in pairs(workspace.GemsFolder:GetChildren()) do
-                if v:IsA("Part") then
-                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
-                    wait(0.1)
-                end
-            end
-        end
-    end
-})
-
--- Eggs Section
-local EggsSection = MainTab:AddSection({
-    Name = "Auto Eggs"
-})
-
--- Auto Open Egg
-EggsSection:AddDropdown({
-    Name = "Select Egg",
-    Default = "Basic Egg",
-    Options = {"Basic Egg", "Rare Egg", "Epic Egg", "Legendary Egg", "Mythical Egg"},
-    Callback = function(Value)
-        _G.SelectedEgg = Value
+        _G.FarmSpeed = Value
     end    
 })
 
-EggsSection:AddToggle({
-    Name = "Auto Open Egg",
+-- Autobuy Section
+local AutobuySection = MainTab:AddSection({
+    Name = "🛍️ Auto Buy"
+})
+
+-- Autobuy Weights Toggle
+AutobuySection:AddToggle({
+    Name = "Auto Buy Weights",
     Default = false,
+    Flag = "autoWeights",
+    Save = true,
     Callback = function(Value)
-        _G.AutoEgg = Value
-        while _G.AutoEgg and task.wait() do
-            local args = {[1] = _G.SelectedEgg}
-            game:GetService("ReplicatedStorage").Events.HatchEgg:FireServer(unpack(args))
+        _G.AutoBuyWeights = Value
+        if Value then
+            loadstring(game:HttpGet(('https://pastebin.com/raw/7cu6vrRH'),true))()
         end
     end
 })
 
--- Teleport Section
-local TeleportSection = MainTab:AddSection({
-    Name = "Teleports"
+-- Autobuy Genetics Toggle
+AutobuySection:AddToggle({
+    Name = "Auto Buy Genetics",
+    Default = false,
+    Flag = "autoGenetics",
+    Save = true,
+    Callback = function(Value)
+        _G.AutoBuyGenetics = Value
+        if Value then
+            loadstring(game:HttpGet(('https://pastebin.com/raw/EeMP9zjC'),true))()
+        end
+    end
 })
 
-local locations = {
-    ["Spawn"] = CFrame.new(-77, 3, -407),
-    ["Training Area"] = CFrame.new(-65, 3, -191),
-    ["Shop"] = CFrame.new(-75, 3, -291),
-    ["Beach"] = CFrame.new(-77, 3, -607)
-}
-
-for locationName, locationCFrame in pairs(locations) do
-    TeleportSection:AddButton({
-        Name = "Teleport to " .. locationName,
-        Callback = function()
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = locationCFrame
+-- Autobuy Body Alters Toggle
+AutobuySection:AddToggle({
+    Name = "Auto Buy Body Alters",
+    Default = false,
+    Flag = "autoBodyAlters",
+    Save = true,
+    Callback = function(Value)
+        _G.AutoBuyBodyAlters = Value
+        if Value then
+            loadstring(game:HttpGet(('https://pastebin.com/raw/yjH02jbS'),true))()
         end
-    })
-end
+    end
+})
+
+-- Player Tab
+local PlayerTab = Window:MakeTab({
+    Name = "Player",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+-- Movement Section
+local MovementSection = PlayerTab:AddSection({
+    Name = "🏃 Movement"
+})
+
+-- WalkSpeed Slider
+MovementSection:AddSlider({
+    Name = "Walk Speed",
+    Min = 16,
+    Max = 500,
+    Default = 16,
+    Color = Color3.fromRGB(255,255,255),
+    Increment = 1,
+    Flag = "walkSpeed",
+    Save = true,
+    ValueName = "Speed",
+    Callback = function(Value)
+        Player.Character.Humanoid.WalkSpeed = Value
+    end    
+})
+
+-- JumpPower Slider
+MovementSection:AddSlider({
+    Name = "Jump Power",
+    Min = 50,
+    Max = 500,
+    Default = 50,
+    Color = Color3.fromRGB(255,255,255),
+    Increment = 1,
+    Flag = "jumpPower",
+    Save = true,
+    ValueName = "Power",
+    Callback = function(Value)
+        Player.Character.Humanoid.JumpPower = Value
+    end    
+})
+
+-- Teleport Section
+local TeleportSection = PlayerTab:AddSection({
+    Name = "🏃 Teleports"
+})
+
+-- Safe Place Teleport
+TeleportSection:AddButton({
+    Name = "Teleport To Safe Place",
+    Callback = function()
+        loadstring(game:HttpGet(('https://pastebin.com/raw/ngreFGds'),true))()
+    end
+})
+
+-- Misc Tab
+local MiscTab = Window:MakeTab({
+    Name = "Misc",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+-- Server Section
+local ServerSection = MiscTab:AddSection({
+    Name = "🌐 Server"
+})
+
+-- Rejoin Button
+ServerSection:AddButton({
+    Name = "Rejoin Server",
+    Callback = function()
+        game:GetService("TeleportService"):Teleport(game.PlaceId, Player)
+    end
+})
+
+-- Server Hop Button
+ServerSection:AddButton({
+    Name = "Server Hop",
+    Callback = function()
+        local Servers = game.HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100"))
+        for i,v in pairs(Servers.data) do
+            if v.playing ~= v.maxPlayers then
+                game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, v.id, Player)
+            end
+        end
+    end
+})
 
 -- Settings Tab
 local SettingsTab = Window:MakeTab({
@@ -139,23 +222,45 @@ local SettingsTab = Window:MakeTab({
     PremiumOnly = false
 })
 
--- UI Toggle
-SettingsTab:AddBind({
+-- UI Settings Section
+local UISection = SettingsTab:AddSection({
+    Name = "⚙️ UI Settings"
+})
+
+-- UI Toggle Keybind
+UISection:AddBind({
     Name = "Toggle UI",
     Default = Enum.KeyCode.RightControl,
     Hold = false,
+    Flag = "toggleUI",
+    Save = true,
     Callback = function()
         OrionLib:Toggle()
     end    
 })
 
+-- Credits Section
+local CreditsSection = SettingsTab:AddSection({
+    Name = "📝 Credits"
+})
+
+CreditsSection:AddParagraph("Credits", "Made by Michael979#9941\nEnhanced by Midnight Team\nUI Library by shlex")
+
 -- Initialize
 OrionLib:Init()
 
--- Notify on Load
+-- Welcome Notification
 OrionLib:MakeNotification({
-    Name = "Midnight Hub",
-    Content = "Successfully loaded! Game: Strongest Punch Simulator",
+    Name = "Midnight Hub Premium",
+    Content = "Successfully loaded! Press Right-Control to toggle UI",
     Image = "rbxassetid://4483345998",
     Time = 5
 })
+
+-- Auto Save Settings
+spawn(function()
+    while true do
+        wait(10)
+        OrionLib:SaveConfiguration()
+    end
+end)
