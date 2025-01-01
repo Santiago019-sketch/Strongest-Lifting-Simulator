@@ -1,0 +1,150 @@
+-- Midnight Hub
+-- Version: 1.0
+
+-- Instances:
+local ScreenGui = Instance.new("ScreenGui")
+local Main = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local TopBar = Instance.new("Frame")
+local UICorner_2 = Instance.new("UICorner")
+local Title = Instance.new("TextLabel")
+local Subtitle = Instance.new("TextLabel")
+local ButtonsHolder = Instance.new("Frame")
+local UIListLayout = Instance.new("UIListLayout")
+
+-- Function to create styled buttons
+local function CreateButton(name, text)
+    local Button = Instance.new("TextButton")
+    local UICorner_Button = Instance.new("UICorner")
+    local UIGradient = Instance.new("UIGradient")
+    
+    Button.Name = name
+    Button.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+    Button.Size = UDim2.new(0.95, 0, 0, 40)
+    Button.Font = Enum.Font.GothamBold
+    Button.Text = text
+    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Button.TextSize = 16.000
+    Button.AutoButtonColor = false
+    
+    UICorner_Button.CornerRadius = UDim.new(0, 8)
+    UICorner_Button.Parent = Button
+    
+    UIGradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(40, 40, 60)),
+        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(30, 30, 45))
+    }
+    UIGradient.Parent = Button
+    
+    -- Hover effect
+    Button.MouseEnter:Connect(function()
+        game:GetService("TweenService"):Create(Button, TweenInfo.new(0.3), {
+            BackgroundColor3 = Color3.fromRGB(50, 50, 75)
+        }):Play()
+    end)
+    
+    Button.MouseLeave:Connect(function()
+        game:GetService("TweenService"):Create(Button, TweenInfo.new(0.3), {
+            BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+        }):Play()
+    end)
+    
+    return Button
+end
+
+-- Properties:
+ScreenGui.Parent = game:GetService("CoreGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Main.Name = "Main"
+Main.Parent = ScreenGui
+Main.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+Main.Position = UDim2.new(0.33, 0, 0.22, 0)
+Main.Size = UDim2.new(0, 320, 0, 400)
+Main.Active = true
+Main.Draggable = true
+
+UICorner.CornerRadius = UDim.new(0, 12)
+UICorner.Parent = Main
+
+TopBar.Name = "TopBar"
+TopBar.Parent = Main
+TopBar.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
+TopBar.Size = UDim2.new(1, 0, 0, 70)
+
+UICorner_2.CornerRadius = UDim.new(0, 12)
+UICorner_2.Parent = TopBar
+
+Title.Name = "Title"
+Title.Parent = TopBar
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.new(0, 0, 0, 5)
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.Font = Enum.Font.GothamBold
+Title.Text = "Midnight Hub"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 24.000
+
+Subtitle.Name = "Subtitle"
+Subtitle.Parent = TopBar
+Subtitle.BackgroundTransparency = 1
+Subtitle.Position = UDim2.new(0, 0, 0, 35)
+Subtitle.Size = UDim2.new(1, 0, 0, 20)
+Subtitle.Font = Enum.Font.Gotham
+Subtitle.Text = "Press 'Q' to toggle"
+Subtitle.TextColor3 = Color3.fromRGB(200, 200, 200)
+Subtitle.TextSize = 14.000
+
+ButtonsHolder.Name = "ButtonsHolder"
+ButtonsHolder.Parent = Main
+ButtonsHolder.BackgroundTransparency = 1
+ButtonsHolder.Position = UDim2.new(0, 0, 0, 80)
+ButtonsHolder.Size = UDim2.new(1, 0, 0.8, -80)
+
+UIListLayout.Parent = ButtonsHolder
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Padding = UDim.new(0, 10)
+
+-- Create and configure buttons
+local buttons = {
+    {name = "AutofarmButton", text = "Autofarm", callback = function()
+        local Thread1 = coroutine.create(function()
+            loadstring(game:HttpGet(('https://pastebin.com/raw/CAyTaeX5'),true))()
+        end)
+        coroutine.resume(Thread1)
+        wait(2)
+        loadstring(game:HttpGet(('https://pastebin.com/raw/kyEAUzvH'),true))()
+    end},
+    {name = "AutobuyWeightsButton", text = "Autobuy Weights", callback = function()
+        loadstring(game:HttpGet(('https://pastebin.com/raw/7cu6vrRH'),true))()
+    end},
+    {name = "AutobuyGeneticsButton", text = "Autobuy Genetics", callback = function()
+        loadstring(game:HttpGet(('https://pastebin.com/raw/EeMP9zjC'),true))()
+    end},
+    {name = "AutobuyBodyAltersButton", text = "Autobuy Body Alters", callback = function()
+        loadstring(game:HttpGet(('https://pastebin.com/raw/yjH02jbS'),true))()
+    end},
+    {name = "TeleportButton", text = "Teleport To Safe Place", callback = function()
+        loadstring(game:HttpGet(('https://pastebin.com/raw/ngreFGds'),true))()
+    end},
+    {name = "DeleteGUIButton", text = "Delete GUI", callback = function(button)
+        ScreenGui:Destroy()
+    end}
+}
+
+-- Create buttons and add callbacks
+for i, buttonInfo in ipairs(buttons) do
+    local button = CreateButton(buttonInfo.name, buttonInfo.text)
+    button.Parent = ButtonsHolder
+    button.MouseButton1Click:Connect(function()
+        buttonInfo.callback(button)
+    end)
+end
+
+-- Toggle GUI visibility with 'Q' key
+game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
+    if input.KeyCode == Enum.KeyCode.Q then
+        Main.Visible = not Main.Visible
+    end
+end)
