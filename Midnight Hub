@@ -1,7 +1,7 @@
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 
 local Window = OrionLib:MakeWindow({
-    Name = "Midnight Hub", 
+    Name = "Midnight Hub - Strongest Punch", 
     HidePremium = true,
     SaveConfig = false,
     IntroEnabled = false,
@@ -15,65 +15,122 @@ local MainTab = Window:MakeTab({
     PremiumOnly = false
 })
 
--- Main Section
-local MainSection = MainTab:AddSection({
-    Name = "Farming"
+-- Farming Section
+local FarmingSection = MainTab:AddSection({
+    Name = "Auto Farm"
 })
 
--- Autofarm Button
-MainSection:AddButton({
-    Name = "Autofarm",
-    Callback = function()
-        local Thread1 = coroutine.create(function()
-            loadstring(game:HttpGet(('https://pastebin.com/raw/CAyTaeX5'),true))()
-        end)
-        coroutine.resume(Thread1)
-        wait(2)
-        loadstring(game:HttpGet(('https://pastebin.com/raw/kyEAUzvH'),true))()
+-- Auto Punch Toggle
+FarmingSection:AddToggle({
+    Name = "Auto Punch",
+    Default = false,
+    Callback = function(Value)
+        _G.AutoPunch = Value
+        while _G.AutoPunch and task.wait() do
+            game:GetService("ReplicatedStorage").Events.DamageIncreaseOnClickEvent:FireServer()
+        end
     end
 })
 
--- Autobuy Section
-local AutobuySection = MainTab:AddSection({
-    Name = "Auto Buy"
-})
-
--- Autobuy Weights Button
-AutobuySection:AddButton({
-    Name = "Autobuy Weights",
-    Callback = function()
-        loadstring(game:HttpGet(('https://pastebin.com/raw/7cu6vrRH'),true))()
+-- Auto Train Toggle
+FarmingSection:AddToggle({
+    Name = "Auto Train",
+    Default = false,
+    Callback = function(Value)
+        _G.AutoTrain = Value
+        while _G.AutoTrain and task.wait() do
+            local args = {[1] = "TrainingArea"}
+            game:GetService("ReplicatedStorage").Events.AreaEvent:FireServer(unpack(args))
+        end
     end
 })
 
--- Autobuy Genetics Button
-AutobuySection:AddButton({
-    Name = "Autobuy Genetics",
-    Callback = function()
-        loadstring(game:HttpGet(('https://pastebin.com/raw/EeMP9zjC'),true))()
+-- Auto Collect Section
+local CollectSection = MainTab:AddSection({
+    Name = "Auto Collect"
+})
+
+-- Auto Collect Coins
+CollectSection:AddToggle({
+    Name = "Auto Collect Coins",
+    Default = false,
+    Callback = function(Value)
+        _G.AutoCoins = Value
+        while _G.AutoCoins and task.wait() do
+            for _, v in pairs(workspace.CoinsFolder:GetChildren()) do
+                if v:IsA("Part") then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
+                    wait(0.1)
+                end
+            end
+        end
     end
 })
 
--- Autobuy Body Alters Button
-AutobuySection:AddButton({
-    Name = "Autobuy Body Alters",
-    Callback = function()
-        loadstring(game:HttpGet(('https://pastebin.com/raw/yjH02jbS'),true))()
+-- Auto Collect Gems
+CollectSection:AddToggle({
+    Name = "Auto Collect Gems",
+    Default = false,
+    Callback = function(Value)
+        _G.AutoGems = Value
+        while _G.AutoGems and task.wait() do
+            for _, v in pairs(workspace.GemsFolder:GetChildren()) do
+                if v:IsA("Part") then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
+                    wait(0.1)
+                end
+            end
+        end
+    end
+})
+
+-- Eggs Section
+local EggsSection = MainTab:AddSection({
+    Name = "Auto Eggs"
+})
+
+-- Auto Open Egg
+EggsSection:AddDropdown({
+    Name = "Select Egg",
+    Default = "Basic Egg",
+    Options = {"Basic Egg", "Rare Egg", "Epic Egg", "Legendary Egg", "Mythical Egg"},
+    Callback = function(Value)
+        _G.SelectedEgg = Value
+    end    
+})
+
+EggsSection:AddToggle({
+    Name = "Auto Open Egg",
+    Default = false,
+    Callback = function(Value)
+        _G.AutoEgg = Value
+        while _G.AutoEgg and task.wait() do
+            local args = {[1] = _G.SelectedEgg}
+            game:GetService("ReplicatedStorage").Events.HatchEgg:FireServer(unpack(args))
+        end
     end
 })
 
 -- Teleport Section
 local TeleportSection = MainTab:AddSection({
-    Name = "Teleport"
+    Name = "Teleports"
 })
 
--- Teleport Button
-TeleportSection:AddButton({
-    Name = "Teleport To Safe Place",
-    Callback = function()
-        loadstring(game:HttpGet(('https://pastebin.com/raw/ngreFGds'),true))()
-    end
-})
+local locations = {
+    ["Spawn"] = CFrame.new(-77, 3, -407),
+    ["Training Area"] = CFrame.new(-65, 3, -191),
+    ["Shop"] = CFrame.new(-75, 3, -291),
+    ["Beach"] = CFrame.new(-77, 3, -607)
+}
+
+for locationName, locationCFrame in pairs(locations) do
+    TeleportSection:AddButton({
+        Name = "Teleport to " .. locationName,
+        Callback = function()
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = locationCFrame
+        end
+    })
+end
 
 -- Settings Tab
 local SettingsTab = Window:MakeTab({
@@ -82,27 +139,15 @@ local SettingsTab = Window:MakeTab({
     PremiumOnly = false
 })
 
--- Keybind Section
-local KeybindSection = SettingsTab:AddSection({
-    Name = "UI Toggle"
-})
-
--- UI Toggle Keybind
-KeybindSection:AddBind({
+-- UI Toggle
+SettingsTab:AddBind({
     Name = "Toggle UI",
-    Default = Enum.KeyCode.Q,
+    Default = Enum.KeyCode.RightControl,
     Hold = false,
     Callback = function()
         OrionLib:Toggle()
     end    
 })
-
--- Credits Section
-local CreditsSection = SettingsTab:AddSection({
-    Name = "Credits"
-})
-
-CreditsSection:AddParagraph("Credits", "Made by Michael979#9941\nUI Library by shlex")
 
 -- Initialize
 OrionLib:Init()
@@ -110,7 +155,7 @@ OrionLib:Init()
 -- Notify on Load
 OrionLib:MakeNotification({
     Name = "Midnight Hub",
-    Content = "Successfully loaded! Press Q to toggle the UI",
+    Content = "Successfully loaded! Game: Strongest Punch Simulator",
     Image = "rbxassetid://4483345998",
     Time = 5
 })
