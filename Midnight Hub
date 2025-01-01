@@ -1,5 +1,5 @@
 -- Midnight Hub
--- Version: 1.0
+-- Version: 1.1
 
 -- Instances:
 local ScreenGui = Instance.new("ScreenGui")
@@ -13,12 +13,12 @@ local ButtonsHolder = Instance.new("Frame")
 local UIListLayout = Instance.new("UIListLayout")
 
 -- Function to create styled buttons
-local function CreateButton(name, text)
+local function CreateStyledButton(name, text)
     local Button = Instance.new("TextButton")
     local UICorner_Button = Instance.new("UICorner")
-    local UIGradient = Instance.new("UIGradient")
     
     Button.Name = name
+    Button.Parent = ButtonsHolder
     Button.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
     Button.Size = UDim2.new(0.95, 0, 0, 40)
     Button.Font = Enum.Font.GothamBold
@@ -30,23 +30,13 @@ local function CreateButton(name, text)
     UICorner_Button.CornerRadius = UDim.new(0, 8)
     UICorner_Button.Parent = Button
     
-    UIGradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(40, 40, 60)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(30, 30, 45))
-    }
-    UIGradient.Parent = Button
-    
     -- Hover effect
     Button.MouseEnter:Connect(function()
-        game:GetService("TweenService"):Create(Button, TweenInfo.new(0.3), {
-            BackgroundColor3 = Color3.fromRGB(50, 50, 75)
-        }):Play()
+        Button.BackgroundColor3 = Color3.fromRGB(50, 50, 75)
     end)
     
     Button.MouseLeave:Connect(function()
-        game:GetService("TweenService"):Create(Button, TweenInfo.new(0.3), {
-            BackgroundColor3 = Color3.fromRGB(40, 40, 60)
-        }):Play()
+        Button.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
     end)
     
     return Button
@@ -106,41 +96,46 @@ UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 UIListLayout.Padding = UDim.new(0, 10)
 
--- Create and configure buttons
-local buttons = {
-    {name = "AutofarmButton", text = "Autofarm", callback = function()
-        local Thread1 = coroutine.create(function()
-            loadstring(game:HttpGet(('https://pastebin.com/raw/CAyTaeX5'),true))()
-        end)
-        coroutine.resume(Thread1)
-        wait(2)
-        loadstring(game:HttpGet(('https://pastebin.com/raw/kyEAUzvH'),true))()
-    end},
-    {name = "AutobuyWeightsButton", text = "Autobuy Weights", callback = function()
-        loadstring(game:HttpGet(('https://pastebin.com/raw/7cu6vrRH'),true))()
-    end},
-    {name = "AutobuyGeneticsButton", text = "Autobuy Genetics", callback = function()
-        loadstring(game:HttpGet(('https://pastebin.com/raw/EeMP9zjC'),true))()
-    end},
-    {name = "AutobuyBodyAltersButton", text = "Autobuy Body Alters", callback = function()
-        loadstring(game:HttpGet(('https://pastebin.com/raw/yjH02jbS'),true))()
-    end},
-    {name = "TeleportButton", text = "Teleport To Safe Place", callback = function()
-        loadstring(game:HttpGet(('https://pastebin.com/raw/ngreFGds'),true))()
-    end},
-    {name = "DeleteGUIButton", text = "Delete GUI", callback = function(button)
-        ScreenGui:Destroy()
-    end}
-}
-
--- Create buttons and add callbacks
-for i, buttonInfo in ipairs(buttons) do
-    local button = CreateButton(buttonInfo.name, buttonInfo.text)
-    button.Parent = ButtonsHolder
-    button.MouseButton1Click:Connect(function()
-        buttonInfo.callback(button)
+-- Create Autofarm Button
+local AutofarmButton = CreateStyledButton("AutofarmButton", "Autofarm")
+AutofarmButton.MouseButton1Click:Connect(function()
+    local Thread1 = coroutine.create(function()
+        loadstring(game:HttpGet(('https://pastebin.com/raw/CAyTaeX5'),true))()
     end)
-end
+    coroutine.resume(Thread1)
+    wait(2)
+    loadstring(game:HttpGet(('https://pastebin.com/raw/kyEAUzvH'),true))()
+end)
+
+-- Create Autobuy Weights Button
+local AutobuyWeightsButton = CreateStyledButton("AutobuyWeightsButton", "Autobuy Weights")
+AutobuyWeightsButton.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet(('https://pastebin.com/raw/7cu6vrRH'),true))()
+end)
+
+-- Create Autobuy Genetics Button
+local AutobuyGeneticsButton = CreateStyledButton("AutobuyGeneticsButton", "Autobuy Genetics")
+AutobuyGeneticsButton.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet(('https://pastebin.com/raw/EeMP9zjC'),true))()
+end)
+
+-- Create Autobuy Body Alters Button
+local AutobuyBodyAltersButton = CreateStyledButton("AutobuyBodyAltersButton", "Autobuy Body Alters")
+AutobuyBodyAltersButton.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet(('https://pastebin.com/raw/yjH02jbS'),true))()
+end)
+
+-- Create Teleport Button
+local TeleportButton = CreateStyledButton("TeleportButton", "Teleport To Safe Place")
+TeleportButton.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet(('https://pastebin.com/raw/ngreFGds'),true))()
+end)
+
+-- Create Delete GUI Button
+local DeleteGUIButton = CreateStyledButton("DeleteGUIButton", "Delete GUI")
+DeleteGUIButton.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
 
 -- Toggle GUI visibility with 'Q' key
 game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
